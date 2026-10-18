@@ -2977,14 +2977,27 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
       display: flex; align-items: center; gap: 9px;
     }
     #gws-chat-launcher:hover { transform: translateY(-2px); }
-    #gws-chat-panel {
-      position: fixed; right: 25px; bottom: 165px; z-index: 10002;
-      width: min(370px, calc(100vw - 28px)); height: min(540px, 68dvh);
-      min-height: 390px; display: none; flex-direction: column;
-      overflow: hidden; border: 1px solid rgba(201,169,97,.42);
-      border-radius: 20px; background: #101012; color: #f4f0e8;
-      font: 14px Jost,sans-serif; box-shadow: 0 22px 75px #000b;
-    }
+    
+#gws-chat-panel {
+  position: fixed;
+  right: 25px;
+  bottom: 90px;
+  z-index: 10002;
+  width: min(370px, calc(100vw - 28px));
+  height: min(540px, calc(100dvh - 120px));
+  min-height: 0;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(201,169,97,.42);
+  border-radius: 20px;
+  background: #101012;
+  color: #f4f0e8;
+  font: 14px Jost,sans-serif;
+  box-shadow: 0 22px 75px #000b;
+  box-sizing: border-box;
+}
+
     #gws-chat-panel.gws-open { display: flex; }
     #gws-chat-header {
       padding: 16px; display: flex; justify-content: space-between;
@@ -3001,6 +3014,8 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
     #gws-chat-messages {
       padding: 15px; display: flex; flex: 1; flex-direction: column;
       gap: 11px; overflow-y: auto; overscroll-behavior: contain;
+      min-height: 0;
+      box-sizing: border-box;
     }
     .gws-msg {
       max-width: 88%; white-space: pre-wrap; overflow-wrap: anywhere;
@@ -3043,11 +3058,15 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
     }
     @media(max-width:600px) {
       #gws-chat-launcher { right: 18px; bottom: 86px; padding: 12px 15px; }
-      #gws-chat-panel {
-        right: 14px; bottom: 150px; width: calc(100vw - 28px);
-        height: min(520px, 66dvh); min-height: 360px;
-      }
-    }
+      
+#gws-chat-panel {
+  right: 14px;
+  bottom: 90px;
+  width: calc(100vw - 28px);
+  height: min(520px, calc(100dvh - 120px));
+  min-height: 0;
+}
+  }
     @media(prefers-reduced-motion:reduce) {
       #gws-chat-launcher { transition: none; }
     }
