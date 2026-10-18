@@ -2884,27 +2884,360 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
 });
 
 </script>
-
 <script>
-     
-  window.
-  DentalBotConfig = {
-  clinicName: "GOVIND WEB STUDIO",
-  whatsappNumber: "918368781040",
-  accentColor: "#0D9488",
-  greeting: "Welcome! How can we help you today?",
-  faqs: [
-    {
-      question: "What are your prices?",
-      answer: "15000rs for a professional website, 25000rs for a professional website with chatbot integrated."
+/* GOVIND WEB STUDIO — FAQ CHAT ASSISTANT
+   Standalone demo: no API key or paid service required.
+   This uses intelligent keyword matching, not a live AI model.
+*/
+
+(() => {
+  const CONFIG = {
+    name: "Govind Web Studio",
+    whatsapp: "918368781040",
+    accent: "#c9a961",
+    greeting:
+      "Hi! 👋 Welcome to Govind Web Studio. I'm your website assistant. What would you like to know?",
+    fallback:
+      "I couldn't find an exact answer to that yet. You can ask about website pricing, features, timelines, hosting, or contact Govind directly on WhatsApp."
+  };
+
+  const FAQS = [
+   {
+      q: "What types of websites do you build?",
+      a: "We build websites for real estate businesses, interior designers, restaurants, local businesses, professional services, personal brands, small brands and startups. We can also discuss other website requirements.",
+      keys: ["type", "types", "industry", "industries", "real estate", "property", "restaurant", "interior", "salon", "gym", "business", "startup", "portfolio", "ecommerce", "e-commerce", "online store"]
     },
     {
-      question: "How do I book a consultation?",
-      answer: "You can request an appointment through WhatsApp."
+      q: "How long does it take to build a website?",
+      a: "The timeline depends on the website size, content, features and feedback. A simple website can be completed faster than a multi-page or custom project. We'll confirm the expected timeline after understanding your requirements.",
+      keys: ["how long", "timeline", "time", "days", "deadline", "duration", "urgent", "fast", "quick", "when ready", "delivery"]
+    },
+    {
+      q: "Do you provide domain and hosting?",
+      a: "We can help with deployment and domain connection. Domain registration and hosting costs may be separate from website development. We can discuss whether you should purchase them directly or need help setting them up.",
+      keys: ["domain", "hosting", "hostinger", "github", "cloudflare", "live", "publish", "deployment", "deploy", "website online", "renewal"]
+    },
+    {
+      q: "Can you add WhatsApp to my website?",
+      a: "Yes. We can add WhatsApp buttons and enquiry links so visitors can start a conversation with your business. More advanced integrations depend on the project requirements.",
+      keys: ["whatsapp", "wa.me", "chat button", "message button", "contact on whatsapp"]
+    },
+    {
+      q: "Can you add an enquiry or contact form?",
+      a: "Yes. We can create a contact or enquiry form to collect details such as a customer's name, phone number, business and requirements. The form must be connected to a suitable service or backend to deliver submissions reliably.",
+      keys: ["form", "forms", "enquiry", "inquiry", "lead", "leads", "contact form", "email notification", "submission", "submit"]
+    },
+    {
+      q: "Can you redesign my existing website?",
+      a: "Yes. We can review your current website and discuss a redesign focused on modern visuals, mobile usability, clearer information and stronger enquiry paths. The scope and quote depend on the existing site.",
+      keys: ["redesign", "old website", "existing website", "update website", "improve website", "outdated", "redesigning"]
+    },
+    {
+      q: "Can you add an AI chatbot?",
+      a: "Yes, chatbot integration can be discussed as an additional feature. A basic FAQ chatbot can answer predefined questions. A genuine AI chatbot needs an AI service and secure backend, and may have usage costs.",
+      keys: ["ai", "artificial intelligence", "chatbot", "chat bot", "bot", "automated replies", "automatic answer", "customer support"]
+    },
+    { 
+     q: "How does the project start?",
+      a: "Start by sharing your name, business name, website type and goals. We'll understand your requirements, discuss the scope and pricing, and confirm the next steps before development begins.",
+      keys: ["start", "get started", "begin", "process", "steps", "project", "consultation", "consult", "book", "booking"]
+    },
+    {
+      q: "How does payment work?",
+      a: "Payment milestones should be agreed before work begins and documented in the project quotation. The amount and schedule depend on the agreed scope. Contact Govind to discuss the terms for your project.",
+      keys: ["payment", "pay", "advance", "installment", "instalment", "upi", "transaction", "refund", "money"]
+    },
+    {
+      q: "Do you provide maintenance and support?",
+      a: "Support and future updates can be discussed according to your project requirements. Ongoing maintenance, new features and recurring services may have separate charges, which should be agreed in advance.",
+      keys: ["maintenance", "support", "update", "updates", "bug", "fix", "monthly", "monthly charges", "after launch", "after delivery"]
+    },
+    {
+      q: "Do you build online stores?",
+      a: "We can discuss an online store based on your products and required features. Product management, payments, shipping and inventory may require additional services or integrations, so the final scope needs to be assessed.",
+      keys: ["online store", "ecommerce", "e-commerce", "sell online", "products", "payment gateway", "shopping cart", "checkout", "inventory", "shipping"]
+    },
+    {
+      q: "What information do you need from me?",
+      a: "Usually, we need your business name, services, contact details, logo, photos, preferred website features and examples you like. If you don't have everything ready, we can discuss what is available.",
+      keys: ["what do you need", "requirements", "content", "logo", "materials", "documents", "information", "photos needed", "prepare"]
     }
-  ]
-};
+  ];
+
+  const style = document.createElement("style");
+  style.textContent = `
+    #gws-chat-launcher {
+      position: fixed; right: 25px; bottom: 100px; z-index: 10001;
+      border: 1px solid rgba(232,213,160,.45);
+      border-radius: 100px; padding: 13px 18px;
+      background: linear-gradient(120deg,#e8d5a0,#c9a961,#a8843f);
+      color: #0a0a0b; font: 600 13px Jost,sans-serif;
+      cursor: pointer; box-shadow: 0 8px 28px #0008;
+      display: flex; align-items: center; gap: 9px;
+    }
+    #gws-chat-launcher:hover { transform: translateY(-2px); }
+    #gws-chat-panel {
+      position: fixed; right: 25px; bottom: 165px; z-index: 10002;
+      width: min(370px, calc(100vw - 28px)); height: min(540px, 68dvh);
+      min-height: 390px; display: none; flex-direction: column;
+      overflow: hidden; border: 1px solid rgba(201,169,97,.42);
+      border-radius: 20px; background: #101012; color: #f4f0e8;
+      font: 14px Jost,sans-serif; box-shadow: 0 22px 75px #000b;
+    }
+    #gws-chat-panel.gws-open { display: flex; }
+    #gws-chat-header {
+      padding: 16px; display: flex; justify-content: space-between;
+      align-items: center; gap: 12px;
+      background: linear-gradient(120deg,#1d1a14,#111113);
+      border-bottom: 1px solid rgba(201,169,97,.25);
+    }
+    #gws-chat-header strong { display:block; font-size:14px; }
+    #gws-chat-header small { display:block; color:#c9a961; margin-top:4px; font-size:11px; }
+    #gws-chat-close {
+      background: transparent; border: 0; color: #e8d5a0;
+      font-size: 25px; cursor: pointer; padding: 2px 6px;
+    }
+    #gws-chat-messages {
+      padding: 15px; display: flex; flex: 1; flex-direction: column;
+      gap: 11px; overflow-y: auto; overscroll-behavior: contain;
+    }
+    .gws-msg {
+      max-width: 88%; white-space: pre-wrap; overflow-wrap: anywhere;
+      padding: 11px 13px; border-radius: 13px; line-height: 1.55;
+      font-size: 13px;
+    }
+    .gws-bot { align-self: flex-start; background: #1c1c20; border: 1px solid #ffffff0d; }
+    .gws-user { align-self: flex-end; background: #c9a961; color: #0a0a0b; }
+    #gws-chat-quick {
+      padding: 0 13px 11px; display: flex; gap: 7px; flex-wrap: wrap;
+    }
+    .gws-quick {
+      border: 1px solid rgba(201,169,97,.42); color: #e8d5a0;
+      background: #171512; border-radius: 100px; padding: 7px 10px;
+      font: 12px Jost,sans-serif; cursor: pointer;
+    }
+    .gws-quick:hover { background: #292319; }
+    #gws-chat-form {
+      display: flex; gap: 8px; padding: 11px;
+      border-top: 1px solid rgba(201,169,97,.25);
+    }
+    #gws-chat-input {
+      flex: 1; min-width: 0; padding: 12px;
+      border: 1px solid #34312a; border-radius: 11px;
+      background: #19191c; color: #f4f0e8; outline: none;
+      font: 13px Jost,sans-serif;
+    }
+    #gws-chat-input:focus { border-color: #c9a961; }
+    #gws-chat-send {
+      border: 0; border-radius: 11px; padding: 0 15px;
+      background: linear-gradient(120deg,#e8d5a0,#c9a961);
+      color: #0a0a0b; font-weight: 700; cursor: pointer;
+    }
+    #gws-chat-footer {
+      padding: 0 12px 10px; color: #777266; text-align: center; font-size: 10px;
+    }
+    .gws-chat-link {
+      color: #e8d5a0; text-decoration: underline; cursor: pointer;
+      display: inline-block; margin-top: 7px;
+    }
+    @media(max-width:600px) {
+      #gws-chat-launcher { right: 18px; bottom: 86px; padding: 12px 15px; }
+      #gws-chat-panel {
+        right: 14px; bottom: 150px; width: calc(100vw - 28px);
+        height: min(520px, 66dvh); min-height: 360px;
+      }
+    }
+    @media(prefers-reduced-motion:reduce) {
+      #gws-chat-launcher { transition: none; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const launcher = document.createElement("button");
+  launcher.id = "gws-chat-launcher";
+  launcher.type = "button";
+  launcher.setAttribute("aria-label", "Open website assistant");
+  launcher.innerHTML = "<span aria-hidden='true'>✦</span> Ask Website Assistant";
+
+  const panel = document.createElement("section");
+  panel.id = "gws-chat-panel";
+  panel.setAttribute("aria-label", "Website assistant chat");
+  panel.innerHTML = `
+    <div id="gws-chat-header">
+      <div>
+        <strong>Govind Web Studio</strong>
+        <small>Website Assistant · Instant FAQ answers</small>
+      </div>
+      <button id="gws-chat-close" type="button" aria-label="Close chat">×</button>
+    </div>
+    <div id="gws-chat-messages" aria-live="polite"></div>
+    <div id="gws-chat-quick">
+      <button class="gws-quick" type="button">Pricing</button>
+      <button class="gws-quick" type="button">Website timeline</button>
+      <button class="gws-quick" type="button">Free demo</button>
+      <button class="gws-quick" type="button">WhatsApp</button>
+    </div>
+    <form id="gws-chat-form">
+      <input id="gws-chat-input" type="text" maxlength="500"
+        placeholder="Ask about your website..." autocomplete="off"
+        aria-label="Type your question" required>
+      <button id="gws-chat-send" type="submit">Send</button>
+    </form>
+    <div id="gws-chat-footer">Automated FAQ assistant · Verify project details with Govind</div>
+  `;
+
+  document.body.append(launcher, panel);
+
+  const messages = panel.querySelector("#gws-chat-messages");
+  const form = panel.querySelector("#gws-chat-form");
+  const input = panel.querySelector("#gws-chat-input");
+
+  function addMessage(text, who) {
+    const bubble = document.createElement("div");
+    bubble.className = "gws-msg " + (who === "user" ? "gws-user" : "gws-bot");
+    bubble.textContent = text;
+    messages.appendChild(bubble);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function openWhatsApp(question) {
+    const message = [
+      "Hi Govind, I visited Govind Web Studio.",
+      "My question: " + question,
+      "Please help me with my website requirements."
+    ].join("\n");
+    const url = "https://wa.me/" + CONFIG.whatsapp +
+      "?text=" + encodeURIComponent(message);
+    window.open(url, "_blank", "noopener");
+  }
+
+  function normalize(text) {
+    return text.toLowerCase()
+      .replace(/[’']/g, "")
+      .replace(/[^\p{L}\p{N}₹\s-]/gu, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function findAnswer(raw) {
+    const text = normalize(raw);
+
+    if (/^(hi|hello|hey|namaste|namaskar|good morning|good evening)$/.test(text)) {
+      return CONFIG.greeting;
+    }
+
+    if (text.includes("whatsapp") && (
+      text.includes("contact") || text.includes("number") ||
+      text.includes("talk") || text.includes("govind")
+    )) {
+      return FAQS.find(f => f.q.startsWith("How can I contact")).a;
+    }
+
+    let best = null;
+    let bestScore = 0;
+
+    for (const faq of FAQS) {
+      let score = 0;
+      const question = normalize(faq.q);
+
+      if (text === question) score += 5;
+
+      for (const keyword of faq.keys) {
+        const key = normalize(keyword);
+        if (key && text.includes(key)) {
+          score += key.includes(" ") ? 3 : 1;
+        }
+      }
+
+      if (score > bestScore) {
+        best = faq;
+        bestScore = score;
+      }
+    }
+
+    return bestScore > 0 ? best.a : CONFIG.fallback;
+  }
+
+  function ask(question) {
+    const cleaned = question.trim();
+    if (!cleaned) return;
+
+    addMessage(cleaned, "user");
+
+    if (/^(whatsapp|talk to govind|contact govind)$/i.test(cleaned)) {
+      addMessage(
+        "I'll open WhatsApp so you can discuss your project directly.",
+        "bot"
+      );
+      const link = document.createElement("button");
+      link.type = "button";
+      link.className = "gws-quick";
+      link.textContent = "Continue on WhatsApp ↗";
+      link.addEventListener("click", () => openWhatsApp(cleaned));
+      const wrapper = document.createElement("div");
+      wrapper.className = "gws-msg gws-bot";
+      wrapper.appendChild(link);
+      messages.appendChild(wrapper);
+      messages.scrollTop = messages.scrollHeight;
+      return;
+    }
+
+    addMessage(findAnswer(cleaned), "bot");
+
+    if (cleaned.length > 0) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "gws-msg gws-bot";
+      const link = document.createElement("button");
+      link.type = "button";
+      link.className = "gws-quick";
+      link.textContent = "Discuss this on WhatsApp ↗";
+      link.addEventListener("click", () => openWhatsApp(cleaned));
+      wrapper.appendChild(link);
+      messages.appendChild(wrapper);
+      messages.scrollTop = messages.scrollHeight;
+    }
+  }
+
+  launcher.addEventListener("click", () => {
+    panel.classList.add("gws-open");
+    launcher.style.display = "none";
+    if (!messages.dataset.started) {
+      addMessage(CONFIG.greeting, "bot");
+      messages.dataset.started = "true";
+    }
+    input.focus();
+  });
+
+  panel.querySelector("#gws-chat-close").addEventListener("click", () => {
+    panel.classList.remove("gws-open");
+    launcher.style.display = "flex";
+  });
+
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    ask(input.value);
+    input.value = "";
+    input.focus();
+  });
+
+  panel.querySelectorAll(".gws-quick").forEach(button => {
+    button.addEventListener("click", () => {
+      const choice = button.textContent.trim();
+      if (choice === "WhatsApp") {
+        ask("WhatsApp");
+      } else {
+        ask(choice);
+      }
+    });
+  });
+})();
+     
 </script>
+</body>
+</html>
+
+
+
      
 </body>
 </html>
