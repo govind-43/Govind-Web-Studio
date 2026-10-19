@@ -2885,7 +2885,6 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
 
 </script>
      
-
 <script>
 /* GOVIND WEB STUDIO — FAQ CHAT ASSISTANT */
 
@@ -2894,7 +2893,7 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
     name: "Govind Web Studio",
     whatsapp: "918368781040",
     greeting:
-      "Hi! 👋 Welcome to Govind Web Studio. I'm your website assistant. What would you like to know?",
+      "Hello 👋 Would you like to take a closer look at our website services?",
     fallback:
       "I couldn't find an exact answer to that yet. You can ask about website pricing, features, timelines, hosting, or contact Govind directly on WhatsApp."
   };
@@ -2976,211 +2975,267 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
     }
     #gws-chat-launcher:hover { transform: translateY(-2px); }
 
-    /* MAIN CONTAINER: Flexbox to strictly control Top, Middle, Bottom */
+    /* MAIN CONTAINER */
     #gws-chat-panel {
       position: fixed;
       right: 16px;
       bottom: 90px;
       z-index: 10002;
-      width: min(380px, calc(100vw - 32px));
+      width: min(370px, calc(100vw - 32px));
       height: 600px;
-      max-height: calc(100dvh - 120px); /* Prevents going off screen */
+      max-height: calc(100dvh - 120px);
       display: none;
-      flex-direction: column; /* Stacks children vertically */
+      flex-direction: column;
       overflow: hidden;
-      border: 1px solid rgba(201,169,97,.42);
-      border-radius: 18px;
+      border-radius: 16px;
       background: #101012;
       color: #f4f0e8;
       font: 14px Jost,sans-serif;
-      box-shadow: 0 22px 75px #000b;
+      box-shadow: 0 22px 75px rgba(0,0,0,0.8);
     }
 
-    #gws-chat-panel.gws-open { 
-      display: flex; 
-    }
+    #gws-chat-panel.gws-open { display: flex; }
     
-    /* HEADER: Fixed at Top */
+    /* HEADER (Tidio Style) */
     #gws-chat-header {
-      flex: 0 0 auto; /* Doesn't grow, doesn't shrink */
-      padding: 14px 16px;
+      flex: 0 0 auto;
+      padding: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      background: linear-gradient(120deg,#1d1a14,#111113);
-      border-bottom: 1px solid rgba(201,169,97,.25);
+      background: #1a1815; /* Dark theme with slight gold tint */
+      border-bottom: 1px solid rgba(201,169,97,.15);
       z-index: 10;
     }
 
-    #gws-chat-header strong {
-      display: block;
-      font-size: 15px;
-      line-height: 1.4;
+    .gws-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    #gws-chat-header small {
+    .gws-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(120deg,#e8d5a0,#c9a961);
+      color: #0a0a0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 2px 10px rgba(201,169,97,0.3);
+    }
+
+    .gws-header-text strong {
+      display: block;
+      font-size: 15px;
+      color: #f4f0e8;
+      line-height: 1.3;
+    }
+
+    .gws-header-text small {
       display: block;
       color: #c9a961;
+      font-size: 12px;
       margin-top: 2px;
-      font-size: 11px;
-      line-height: 1.4;
     }
 
     #gws-chat-close {
       background: transparent;
       border: none;
-      color: #c9a961;
+      color: #777;
       font-size: 24px;
       cursor: pointer;
       line-height: 1;
-      padding: 0;
-      opacity: 0.8;
+      padding: 0 5px;
     }
-    #gws-chat-close:hover { opacity: 1; }
+    #gws-chat-close:hover { color: #f4f0e8; }
     
-    /* MESSAGES AREA: Takes up all remaining middle space */
+    /* MESSAGES AREA */
     #gws-chat-messages {
-      flex: 1 1 auto; /* This is the magic part: it grows to fill empty space */
-      min-height: 0; /* Crucial for scrollable flex children */
-      overflow-y: auto; /* Adds the scrollbar */
-      padding: 20px 16px; /* WhatsApp-like spacing */
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px; /* Space between messages */
-      background-color: #0b141a; /* WhatsApp Dark Mode background color */
+      gap: 16px;
+      background-color: #101012;
     }
 
-    /* Custom Scrollbar for messages */
-    #gws-chat-messages::-webkit-scrollbar {
-      width: 6px;
-    }
+    #gws-chat-messages::-webkit-scrollbar { width: 5px; }
     #gws-chat-messages::-webkit-scrollbar-thumb {
-      background: rgba(201,169,97,.3);
+      background: rgba(255,255,255,0.1);
       border-radius: 10px;
     }
 
+    /* MESSAGE WRAPPERS */
+    .gws-msg-row {
+      display: flex;
+      width: 100%;
+    }
+    .gws-msg-row.user {
+      justify-content: flex-end;
+    }
+    .gws-msg-row.bot {
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .gws-msg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #c9a961;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-bottom: 2px;
+    }
+
     .gws-msg {
-      max-width: 85%; 
-      white-space: pre-wrap; 
-      overflow-wrap: anywhere;
-      padding: 12px 14px; 
-      border-radius: 12px; 
+      max-width: 80%; 
+      padding: 12px 16px; 
+      border-radius: 16px; 
       line-height: 1.5;
-      font-size: 13.5px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-      animation: gwsFadeIn 0.2s ease-out;
+      font-size: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      animation: gwsFadeIn 0.3s ease-out;
     }
 
     @keyframes gwsFadeIn {
-      from { opacity: 0; transform: translateY(5px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Bot Message Style (Left) */
     .gws-bot { 
-      align-self: flex-start; 
-      background: #202c33; /* WhatsApp dark mode incoming message color */
-      border: 1px solid rgba(255,255,255,0.05); 
-      border-top-left-radius: 4px; /* WhatsApp chat tail effect */
+      background: #1e1e22; 
+      color: #e0e0e0;
+      border-bottom-left-radius: 4px; /* Tidio style bot tail */
     }
 
-    /* User Message Style (Right) */
     .gws-user { 
-      align-self: flex-end; 
-      background: #005c4b; /* WhatsApp dark mode outgoing message color */
-      color: #e9edef; 
-      border-top-right-radius: 4px; 
+      background: #c9a961; 
+      color: #0a0a0b; 
+      border-bottom-right-radius: 4px; /* Tidio style user tail */
     }
 
-    /* QUICK REPLIES */
-    #gws-chat-quick {
-      flex: 0 0 auto; 
-      padding: 12px 16px;
+    /* INLINE QUICK REPLIES (Tidio Style) */
+    .gws-inline-quick {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      background: #111113;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: 10px;
+      margin-left: 36px; /* Aligns with bot message */
     }
     
-    .gws-quick {
-      border: 1px solid rgba(201,169,97,.42); 
-      color: #e8d5a0;
-      background: transparent; 
-      border-radius: 100px; 
-      padding: 8px 12px;
-      font: 12px Jost,sans-serif; 
+    .gws-quick-btn {
+      background: transparent;
+      border: 1px solid #c9a961;
+      color: #c9a961;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font: 13px Jost,sans-serif;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .gws-quick:hover { background: #292319; }
+    .gws-quick-btn:hover { background: rgba(201,169,97,0.1); }
 
-    /* INPUT AREA: Fixed at Bottom */
-    #gws-chat-form {
-      flex: 0 0 auto; 
-      display: flex;
-      gap: 8px;
-      padding: 12px 16px;
-      background: #111113;
+    /* INPUT AREA (Tidio Style) */
+    #gws-chat-input-area {
+      flex: 0 0 auto;
+      background: #101012;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 12px 16px 8px;
     }
 
+    #gws-chat-form {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .gws-input-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: #1a1a1e;
+      border-radius: 24px;
+      padding: 6px 12px;
+      border: 1px solid transparent;
+      transition: border 0.2s;
+    }
+    .gws-input-wrapper:focus-within {
+      border-color: rgba(201,169,97,0.5);
+    }
+
+    .gws-input-icon {
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .gws-input-icon:hover { color: #c9a961; }
+
     #gws-chat-input {
-      flex: 1; 
-      min-width: 0; 
-      padding: 14px 16px;
-      border: none; 
-      border-radius: 20px; /* WhatsApp style pill input */
-      background: #2a3942; /* WhatsApp input bg */
-      color: #f4f0e8; 
+      flex: 1;
+      min-width: 0;
+      padding: 8px;
+      border: none;
+      background: transparent;
+      color: #f4f0e8;
       outline: none;
       font: 14px Jost,sans-serif;
     }
-    
-    #gws-chat-input::placeholder {
-      color: #8696a0;
-    }
+    #gws-chat-input::placeholder { color: #666; }
 
     #gws-chat-send {
       border: 0; 
-      border-radius: 50%; /* Circular send button */
-      width: 46px;
-      height: 46px;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #c9a961;
       color: #0a0a0b; 
-      font-weight: 700; 
       cursor: pointer;
       transition: transform 0.1s;
+      box-shadow: 0 4px 12px rgba(201,169,97,0.3);
     }
     
-    #gws-chat-send:active {
-      transform: scale(0.95);
-    }
+    #gws-chat-send:active { transform: scale(0.95); }
 
+    /* POWERED BY TEXT */
     #gws-chat-footer {
-      flex: 0 0 auto; 
-      padding: 0 10px 12px;
-      color: #777266;
       text-align: center;
+      padding-top: 8px;
+      color: #555;
       font-size: 10px;
-      background: #111113;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
     }
+    #gws-chat-footer strong { color: #888; }
 
     @media(max-width:600px) {
-      #gws-chat-launcher {
-        right: 18px;
-        bottom: 86px;
-        padding: 12px 15px;
-      }
-
+      #gws-chat-launcher { right: 18px; bottom: 86px; }
       #gws-chat-panel {
-        right: 12px;
-        bottom: 80px;
+        right: 12px; bottom: 80px;
         width: calc(100vw - 24px);
-        height: calc(100dvh - 100px); /* Almost full screen on mobile */
+        height: calc(100dvh - 100px);
         max-height: 700px;
       }
     }
@@ -3198,28 +3253,42 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
   panel.setAttribute("aria-label", "Website assistant chat");
   panel.innerHTML = `
     <div id="gws-chat-header">
-      <div>
-        <strong>Govind Web Studio</strong>
-        <small>Website Assistant · Online</small>
+      <div class="gws-header-left">
+        <div class="gws-avatar">G</div>
+        <div class="gws-header-text">
+          <strong>Govind Web Studio</strong>
+          <small>We are online!</small>
+        </div>
       </div>
       <button id="gws-chat-close" type="button" aria-label="Close chat">×</button>
     </div>
+    
     <div id="gws-chat-messages" aria-live="polite"></div>
-    <div id="gws-chat-quick">
-      <button class="gws-quick" type="button">Pricing</button>
-      <button class="gws-quick" type="button">Timeline</button>
-      <button class="gws-quick" type="button">Free demo</button>
-      <button class="gws-quick" type="button">WhatsApp</button>
+    
+    <div id="gws-chat-input-area">
+      <form id="gws-chat-form">
+        <div class="gws-input-wrapper">
+          <!-- Paperclip Icon -->
+          <div class="gws-input-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+          </div>
+          
+          <input id="gws-chat-input" type="text" maxlength="500"
+            placeholder="Enter your message..." autocomplete="off"
+            aria-label="Type your question" required>
+            
+          <!-- Emoji Icon -->
+          <div class="gws-input-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+          </div>
+        </div>
+        
+        <button id="gws-chat-send" type="submit" aria-label="Send message">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </form>
+      <div id="gws-chat-footer">POWERED BY <strong>GOVIND WEB STUDIO</strong></div>
     </div>
-    <form id="gws-chat-form">
-      <input id="gws-chat-input" type="text" maxlength="500"
-        placeholder="Type a message..." autocomplete="off"
-        aria-label="Type your question" required>
-      <button id="gws-chat-send" type="submit" aria-label="Send message">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-      </button>
-    </form>
-    <div id="gws-chat-footer">Automated FAQ assistant · Verify details with Govind</div>
   `;
 
   document.body.append(launcher, panel);
@@ -3228,13 +3297,51 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
   const form = panel.querySelector("#gws-chat-form");
   const input = panel.querySelector("#gws-chat-input");
 
+  // Function to create message structure
   function addMessage(text, who) {
-    const bubble = document.createElement("div");
-    bubble.className = "gws-msg " + (who === "user" ? "gws-user" : "gws-bot");
-    bubble.textContent = text;
-    messages.appendChild(bubble);
+    const row = document.createElement("div");
+    row.className = `gws-msg-row ${who}`;
     
-    // Smooth scroll to bottom
+    if (who === "bot") {
+      // Add avatar for bot
+      const avatar = document.createElement("div");
+      avatar.className = "gws-msg-avatar";
+      avatar.textContent = "G";
+      row.appendChild(avatar);
+    }
+    
+    const bubble = document.createElement("div");
+    bubble.className = `gws-msg gws-${who}`;
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    
+    messages.appendChild(row);
+    scrollToBottom();
+  }
+
+  // Function to add inline quick replies (Tidio style)
+  function addQuickReplies(options) {
+    const container = document.createElement("div");
+    container.className = "gws-inline-quick";
+    
+    options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "gws-quick-btn";
+      btn.textContent = opt.label;
+      btn.addEventListener("click", () => {
+        // Remove quick replies once clicked
+        container.remove(); 
+        ask(opt.value);
+      });
+      container.appendChild(btn);
+    });
+    
+    messages.appendChild(container);
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
     setTimeout(() => {
       messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
     }, 50);
@@ -3305,46 +3412,62 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
 
     addMessage(cleaned, "user");
 
-    if (/^(whatsapp|talk to govind|contact govind)$/i.test(cleaned)) {
-      setTimeout(() => {
-        addMessage("I'll open WhatsApp so you can discuss your project directly.", "bot");
-        const wrapper = document.createElement("div");
-        wrapper.className = "gws-msg gws-bot";
-        const link = document.createElement("button");
-        link.type = "button";
-        link.className = "gws-quick";
-        link.style.marginTop = "8px";
-        link.textContent = "Continue on WhatsApp ↗";
-        link.addEventListener("click", () => openWhatsApp(cleaned));
-        wrapper.appendChild(link);
-        messages.appendChild(wrapper);
-        messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
-      }, 400); // Slight delay for realistic feel
-      return;
-    }
-
+    // Show "typing..." delay
     setTimeout(() => {
+      if (/^(whatsapp|talk to govind|contact govind)$/i.test(cleaned)) {
+        addMessage("I'll open WhatsApp so you can discuss your project directly.", "bot");
+        addQuickReplies([
+          { label: "Continue on WhatsApp ↗", value: "open_wa" }
+        ]);
+        // Special case to handle the WA link click
+        const lastQuickBtn = messages.querySelector('.gws-inline-quick:last-child .gws-quick-btn');
+        if (lastQuickBtn) {
+          lastQuickBtn.onclick = (e) => {
+             e.target.closest('.gws-inline-quick').remove();
+             openWhatsApp(cleaned);
+          };
+        }
+        return;
+      }
+
       addMessage(findAnswer(cleaned), "bot");
       
-      const wrapper = document.createElement("div");
-      wrapper.className = "gws-msg gws-bot";
-      const link = document.createElement("button");
-      link.type = "button";
-      link.className = "gws-quick";
-      link.style.marginTop = "8px";
-      link.textContent = "Discuss this on WhatsApp ↗";
-      link.addEventListener("click", () => openWhatsApp(cleaned));
-      wrapper.appendChild(link);
-      messages.appendChild(wrapper);
-      messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
-    }, 500); // Fake typing delay
+      // Add fallback quick replies to keep conversation going (Tidio style)
+      if (!messages.querySelector('.gws-inline-quick')) {
+         addQuickReplies([
+            { label: "See Pricing", value: "Pricing" },
+            { label: "Discuss on WhatsApp ↗", value: "WhatsApp" }
+         ]);
+         // Special handling for WA in this quick reply
+         const btns = messages.querySelectorAll('.gws-inline-quick:last-child .gws-quick-btn');
+         if(btns[1]) {
+             btns[1].onclick = (e) => {
+                 e.target.closest('.gws-inline-quick').remove();
+                 openWhatsApp("Pricing and details");
+             }
+         }
+      }
+
+    }, 600); // Fake typing delay
   }
 
+  // Initial Launch
   launcher.addEventListener("click", () => {
     panel.classList.add("gws-open");
     launcher.style.display = "none";
+    
     if (!messages.dataset.started) {
+      // Intro Message
       addMessage(CONFIG.greeting, "bot");
+      
+      // Tidio style inline quick replies at the start
+      setTimeout(() => {
+        addQuickReplies([
+          { label: "Yes, please!", value: "Pricing" },
+          { label: "No, thanks.", value: "Just browsing" }
+        ]);
+      }, 300);
+      
       messages.dataset.started = "true";
     }
     setTimeout(() => input.focus(), 100);
@@ -3361,20 +3484,7 @@ document.getElementById("contactForm").addEventListener("submit", function(e){
     input.value = "";
     input.focus();
   });
-
-  panel.querySelectorAll(".gws-quick").forEach(button => {
-    button.addEventListener("click", () => {
-      const choice = button.textContent.trim();
-      if (choice === "WhatsApp") {
-        ask("WhatsApp");
-      } else if (choice === "Timeline") {
-        ask("Website timeline");
-      } else {
-        ask(choice);
-      }
-    });
-  });
 })();
 </script>
 </body>
-     </html>
+</html>
